@@ -1,0 +1,133 @@
+<html lang="ko" 
+    xmlns:th="http://www.thymeleaf.org" 
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/default}">
+        
+
+	<main layout:fragment="contents" class="screen">
+      <div class="content">
+        <section class="signup-section">
+          <h1 class="logo text-center">Gingstagram</h1>
+          
+            <div class="form-group">
+              <label for="nameInput">Name</label>
+              <input type="text" id="nameInput" class="form-control" placeholder="성명">
+            </div>
+            <div class="form-group">
+              <label for="emailInput">Email</label>
+              <input type="email" id="emailInput" class="form-control" placeholder="이메일 주소">
+            </div>
+            <div class="form-group">
+              <label for="loginIdInput">Id</label>
+              <div>
+                <input type="text" id="loginIdInput" class="form-control" placeholder="아이디">
+                <button type="button" id="duplicateBtn" class="btn btn-outline-primary mt-2 w-100">중복확인</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="passwordInput">Password</label>
+              <input type="password" id="passwordInput" class="form-control" placeholder="비밀번호">
+            </div>
+            <div class="button-group text-center">
+              <button type="button" id="joinBtn" class="btn btn-primary btn-block">가입</button>
+            </div>
+            <p class="link text-center">계정이 있으신가요? <a href="/user/login-view" class="text-primary">로그인</a></p>
+          
+        </section>
+      </div>
+
+    </main>
+    
+    
+    
+    <script layout:fragment="script">
+			$(function() {
+				
+				let isDuplicate = null;
+				
+				$("#duplicateBtn").on("click", function() {
+					let loginId = $("#loginIdInput").val();
+					
+					
+					$.ajax({
+						type:"Get"
+						, url:"/user/duplicate-id"
+						, data:{"loginId":loginId}
+						, success:function(response) {
+							if(response.isDuplicate == true) {
+								alert("중복된 아이디 입니다.");
+								isDuplicate = true;
+							} else {
+								alert("사용 가능한 아이디입니다.");
+								isDuplicate = false;
+							}
+						}
+						, error:function() {
+							alert("중복 확인 에러!!");
+						}
+					});
+					
+				});
+				
+				
+				$("#joinBtn").on("click", function() {
+					let name = $("#nameInput").val();
+					let email = $("#emailInput").val();
+					let loginId = $("#loginIdInput").val();
+					let password = $("#passwordInput").val();
+					
+					if(name == "") {
+						alert("이름을 입력하세요");
+						return ;
+					}
+					
+					if(email == "") {
+						alert("이메일을 입력하세요");
+						return ;
+					}
+					
+					if(loginId == "") {
+						alert("아이디를 입력하세요");
+						return ;
+					}
+					
+					if(password == "") {
+						alert("비밀번호를 입력하세요");
+						return ;
+					}
+					
+					if(isDuplicate == null) {
+						alert("아이디를 중복확인하세요.");
+						return ;
+					}
+					
+					if(isDuplicate) {
+						alert("중복된 아이디입니다.");
+						location.href = "/user/join-view";
+						return ;
+					}
+					
+					
+					
+					$.ajax({
+						type:"post"
+						, url:"/user/join"
+						, data:{"loginId":loginId, "password":password, "name":name, "email":email}
+						, success:function(response) {
+							if(response.result == "success") {
+								alert("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
+								location.href = "/user/login-view";
+							} else {
+								alert("회원 가입 실패!!");
+							}
+						}
+						, error:function() {
+							alert("회원가입 에러!!");
+						}
+					});
+				});
+			});
+		
+		</script>
+
+</html>
