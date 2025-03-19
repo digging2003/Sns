@@ -1,0 +1,80 @@
+<html lang="ko" 
+    xmlns:th="http://www.thymeleaf.org" 
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layouts/default}">
+        
+	<main layout:fragment="contents" class="d-flex justify-content-center">
+		<div class="post">
+		    <div class="d-flex align-items-center">
+		        <strong class="username">james1223</strong>
+		    </div>
+		    <div class="post-image mt-2">
+		        <img src="images/Image.png" alt="Post Image" class="w-100">
+		    </div>
+		    <div class="post-actions d-flex justify-content-between mt-3">
+		        <div>
+		            <img id="like" value="unlike" src="images/Heart.png" alt="Like" class="icon">
+		            <img id="comment" src="images/Message circle.png" alt="Comment" class="icon">
+		            <img src="images/Send.png" alt="Share" class="icon">
+		        </div>
+		    </div>
+		    <div class="post-content mt-2">
+		      <div><strong>좋아요 123개</strong></div>
+		      <div class="mt-2"><strong>_james__</strong> 댓글~~~.</div>
+		      <div class="text-muted mt-2">댓글 10개 모두 보기</div>
+		      <div class="mt-2"><strong>_anotherfriend</strong> 댓글댛ㅅㄷ눋ㄴㄱ</div>
+		        
+		        
+		      <div class="d-flex mt-3">
+		          <!-- 댓글 입력창 -->
+		        <input type="text" class="form-control" placeholder="댓글 달기..." style="flex: 1;"></textarea>
+		
+		          <!-- 댓글 달기 버튼 -->
+		          <button type="button" class="btn text-primary ms-2">게시</button>
+		        </div>
+		      
+		      </div>
+		  </div>
+	</main>
+	
+	<script layout:fragment="script">
+          $(function () {
+            $("#like").val("unlike");
+            
+
+            // 사용자 이미지 클릭 시 팝업 띄우기
+            $("#userImage").on("click", function() {
+                $("#popup").toggle();  // 팝업 창 토글 (보이기/숨기기)
+            });
+
+            // 로그아웃 버튼 클릭 시 처리
+            $("#logoutButton").on("click", function() {
+                // 로그아웃 처리 (이 부분은 실제로 로그아웃을 처리하는 로직으로 변경해야 합니다.)
+                alert("로그아웃되었습니다. 로그인 페이지로 이동합니다.");
+                
+            });
+
+            // 팝업 외부를 클릭하면 팝업 숨기기
+            $(document).on("click", function(event) {
+                if (!$(event.target).closest("#popup, #userImage").length) {
+                    $("#popup").hide(); // 팝업 숨기기
+                }
+            });
+
+            $("#like").on("click", function() {
+              
+
+              if($("#like").val() == "unlike") {
+                $("#like").attr("src", "images/Heart filled.png");
+                $("#like").val("like")
+              } else {
+                $("#like").attr("src", "images/Heart.png");
+                $("#like").val("unlike")
+              }
+
+            });
+
+          });
+        </script>
+        
+</html>
