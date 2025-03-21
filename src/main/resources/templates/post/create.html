@@ -6,26 +6,85 @@
 	<main layout:fragment="contents" class="d-flex justify-content-center">
 	  <div class="post">
 	      
-	    <div class="post-image mt-2">
-	      <img src="images/Image.png" alt="Post Image" class="w-100">
-	    </div>
-	    <textarea class="textarea mt-3" rows="4" placeholder="문구 추가..."></textarea>
-	    <button type="button" class="btn btn-primary w-100 mt-3">공유하기</button>
+	    	<label><img src="/static/images/Image.png" alt="Post Image" class="post-image mt-2 w-100" id="imageFile" for="fileInput">
+		      	<div class="mb-3">
+				  <input class="form-control" type="file" id="fileInput">
+				</div>
+			</label>
+	    <textarea class="textarea mt-3" rows="4" placeholder="문구 추가..." id="contentsInput"></textarea>
+	    <button type="button" class="btn btn-primary w-100 mt-3" id="uploadBtn">공유하기</button>
 	      
 	  </div>
 	</main>
 
 
 	<script layout:fragment="script">
+	$(function() {
+		
+		// 업로드하기
+		$("#uploadBtn").on("click", function() {
+			let contents = $("#contentsInput").val();
+			let file = $("#fileInput")[0].files[0];
+			
+			if(contents == "") {
+				alert("내용을 입력하세요");
+				return;
+			}
+			
+			if(file == null) {
+				alert("이미지를 선택해주세요");
+				return
+			}
+			
+			let formData = new FormData();
+			formData.append("contents", contents);
+			formData.append("imageFile", file);
+			
+			$.ajax({
+				type:"post"
+				, url:"/post/create"
+				, data:formData
+   				, enctype:"multipart/form-data" // 파일 업로드시 추가 옵션
+    			, processData:false // 파일 업로드시 추가 옵션
+    			, contentType:false // 파일 업로드시 추가 옵션
+				, success:function(response) {
+					if(response.result == "success") {
+						location.href = "/post/timeline-view";
+					} else {
+						alert("게시물 업로드 실패!")
+					}
+				}
+				, error:function() {
+					alert("게시물 업로드 에러!!");
+				}
+			});
+			
+		});
+		
+		// 사진 업로드시 미리보기 띄우기
+		$("#fileInput").on("change", function(event) {
+
+		    var file = event.target.files[0];
+
+		    var reader = new FileReader(); 
+		    reader.onload = function(e) {
+
+		        $("#imageFile").attr("src", e.target.result);
+		    }
+
+		    reader.readAsDataURL(file);
+		});
+		
 	    // 사용자 이미지 클릭 시 팝업 띄우기
 	    $("#userImage").on("click", function() {
 	        $("#popup").toggle();  // 팝업 창 토글 (보이기/숨기기)
 	    });
 	
 	    // 로그아웃 버튼 클릭 시 처리
-	    $("#logoutButton").on("click", function() {
+	    $("#logoutBtn").on("click", function() {
 	        // 로그아웃 처리 (이 부분은 실제로 로그아웃을 처리하는 로직으로 변경해야 합니다.)
 	        alert("로그아웃되었습니다. 로그인 페이지로 이동합니다.");
+	        location.href = "/user/login-view";
 	        
 	    });
 	
@@ -35,5 +94,16 @@
 	            $("#popup").hide(); // 팝업 숨기기
 	        }
 	    });
+	    
+	    // 글쓰기 버튼 클릭 시 처리
+        $("#createBtn").on("click", function() {
+            location.href = "/post/create-view";
+            
+        });
+
+		
+		
+	});
+
 	</script>
 </html>

@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.digging.gingstagram.post.domain.Post;
+import com.digging.gingstagram.post.dto.CardView;
 import com.digging.gingstagram.post.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
@@ -23,14 +23,14 @@ public class PostController {
 	}
 	
 	@GetMapping("/timeline-view")
-	public String timelineView(
+	public String timeline(
 			HttpSession session
 			, Model model) {
 		
 		int userId = (Integer) session.getAttribute("userId");
-		List<Post> contentsList = postService.getPostList(userId);
+		List<CardView> cardList = postService.getPostList();
 		
-		model.addAttribute("postList", postList);
+		model.addAttribute("cardList", cardList);
 		
 		return "post/timeline";
 	}

@@ -46,4 +46,9 @@ private final UserRepository userRepository;
 		
 		return userRepository.searchId(loginId);
 	}
+	
+	public User getUserById(int id) {
+		
+		return userRepository.selectUserById(id);
+	}
 }
