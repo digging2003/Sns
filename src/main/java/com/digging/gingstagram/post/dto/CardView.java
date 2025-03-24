@@ -1,5 +1,9 @@
 package com.digging.gingstagram.post.dto;
 
+import java.util.List;
+
+import com.digging.gingstagram.comment.domain.Comment;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,4 +21,6 @@ public class CardView {
 	
 	private int userId;
 	private String loginId;
+	
+	private List<Comment> commentList;
 }

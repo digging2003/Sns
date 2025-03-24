@@ -3,7 +3,7 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{layouts/default}">
         
-	<main layout:fragment="contents" class="d-flex justify-content-center" th:each="card:${cardList}">
+	<main layout:fragment="contents" class="d-flex justify-content-center card-list" th:each="card:${cardList}">
 		<div class="post">
 		    <div class="d-flex align-items-center">
 		        <strong class="username" th:text="${card.loginId}">유저아이디</strong>
@@ -13,7 +13,7 @@
 		    </div>
 		    <div class="post-actions d-flex justify-content-between mt-3">
 		        <div>
-		            <img id="like" value="unlike" src="/static/images/Heart.png" alt="Like" class="icon">
+		            <img value="unlike" src="/static/images/Heart.png" alt="Like" class="like icon" th:data-post-id="${card.postId}">
 		            <img id="comment" src="/static/images/Message circle.png" alt="Comment" class="icon">
 		            <img src="/static/images/Send.png" alt="Share" class="icon">
 		        </div>
@@ -21,16 +21,19 @@
 		    <div class="post-content mt-2">
 		      <div><strong>좋아요 123개</strong></div>
 		      <div class="mt-2"><strong th:text="${card.loginId}">유저아이디</strong> <span th:text="${card.contents}">게시글내용~~~.</span></div>
-		      <div class="text-muted mt-2">댓글 10개 모두 보기</div>
-		      <div class="mt-2"><strong>댓글단사람아이디</strong> 댓글댛ㅅㄷ눋ㄴㄱ</div>
+		      <div class="text-muted mt-2">댓글 <span>10</span>개 모두 보기</div>
+		      <div th:each="comment:${card.commentList}">
+		      	<div class="mt-2"><strong th:text="${comment.userId}">댓글단사람아이디</strong> <span th:text="${comment.contents}">댓글댛ㅅㄷ눋ㄴㄱ</span></div>
+		      </div>
+		      
 		        
 		        
 		      <div class="d-flex mt-3">
 		          <!-- 댓글 입력창 -->
-		        <input type="text" class="form-control" placeholder="댓글 달기..." style="flex: 1;"></textarea>
+		          <input type="text" class="form-control comment-input" placeholder="댓글 달기..." style="flex: 1;">
 		
 		          <!-- 댓글 달기 버튼 -->
-		          <button type="button" class="btn text-primary ms-2">게시</button>
+		          <button type="button" class="comment-btn btn text-primary ms-2" th:data-post-id="${card.postId}">게시</button>
 		        </div>
 		      
 		      </div>
@@ -39,18 +42,62 @@
 	
 	<script layout:fragment="script">
           $(function () {
-            $("#like").val("unlike");
+        	  
+        	  // 댓글작성 기능
+        	  $(".comment-btn").on("click", function() {
+        		  
+        		  let postId = $(this).data("post-id");
+        		  let contents = $(this).siblings(".comment-input").val();
+        		  
+  				$.ajax({
+					type:"post"
+					, url:"/post/comment/create"
+					, data:{"postId":postId, "contents":contents}
+					, success:function(response) {
+						if(response.result == "success") {					
+							location.reload();
+						} else {
+							alert("댓글작성 실패!");
+						}
+					}
+					, error:function() {
+						alert("댓글작성 에러!");
+					}
+				});
+        		  
+        	  });
+        	  
+        	  
+        	// 좋아요 기능
+            $(".like").val("unlike");
             
-            $("#like").on("click", function() {
-                
+            $(".like").on("click", function() {
 
-                if($("#like").val() == "unlike") {
-                  $("#like").attr("src", "/static/images/Heart filled.png");
-                  $("#like").val("like")
+                if($(this).val() == "unlike") {
+                  $(this).attr("src", "/static/images/Heart filled.png");
+                  $(this).val("like")
                 } else {
-                  $("#like").attr("src", "/static/images/Heart.png");
-                  $("#like").val("unlike")
+                  $(this).attr("src", "/static/images/Heart.png");
+                  $(this).val("unlike")
                 }
+                
+                let postId = $(this).data("post-id");
+                
+				$.ajax({
+					type:"post"
+					, url:"/post/like"
+					, data:{"postId":postId}
+					, success:function(response) {
+						if(response.result == "success") {
+							location.reload();
+						} else {
+							alert("좋아요 실패!");
+						}
+					}
+					, error:function() {
+						alert("좋아요 에러!");
+					}
+				});
 
               });
             

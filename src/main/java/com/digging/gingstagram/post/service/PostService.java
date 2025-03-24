@@ -7,6 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.digging.gingstagram.comment.domain.Comment;
+import com.digging.gingstagram.comment.service.CommentService;
 import com.digging.gingstagram.common.FileManager;
 import com.digging.gingstagram.post.domain.Post;
 import com.digging.gingstagram.post.dto.CardView;
@@ -23,9 +25,12 @@ public class PostService {
 	
 	private UserService userService;
 	
-	public PostService(PostRepository postRepository, UserService userService) {
+	private CommentService commentService;
+	
+	public PostService(PostRepository postRepository, UserService userService, CommentService commentService) {
 		this.postRepository = postRepository;
 		this.userService = userService;
+		this.commentService = commentService;
 	}
 	
 	public boolean addPost(int userId, String contents, MultipartFile imageFile) {
@@ -58,6 +63,7 @@ public class PostService {
 		
 		for(Post post:postList) {
 			User user = userService.getUserById(post.getUserId());
+			List<Comment> commentList = commentService.getCommentListByPostId(post.getId());
 			
 			CardView cardView = CardView.builder()
 			.postId(post.getId())
@@ -65,6 +71,7 @@ public class PostService {
 			.imagePath(post.getImagePath())
 			.userId(post.getUserId())
 			.loginId(user.getLoginId())
+			.commentList(commentList)
 			.build();
 			
 			cardList.add(cardView);
