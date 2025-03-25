@@ -27,7 +27,9 @@ public class LikeRestController {
 		
 		int userId = (Integer)session.getAttribute("userId");
 		
-		if(likeService.isLike(postId, userId)) { // 좋아요가 되어있을때 delete
+		if(likeService.isLike(postId, userId)) { 
+			
+			// 좋아요가 되어있을때 delete
 			Map<String, String> resultMap = new HashMap<>();
 			if(likeService.deleteLike(postId, userId)) {
 				resultMap.put("result", "success");
@@ -37,7 +39,9 @@ public class LikeRestController {
 			
 			return resultMap;
 			
-		} else { // 좋아요 없을때 add
+		} else { 
+			
+			// 좋아요 없을때 add
 			Map<String, String> resultMap = new HashMap<>();
 			if(likeService.addLike(postId, userId)) {
 				resultMap.put("result", "success");

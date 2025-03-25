@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.digging.gingstagram.comment.domain.Comment;
 import com.digging.gingstagram.comment.service.CommentService;
 import com.digging.gingstagram.common.FileManager;
+import com.digging.gingstagram.like.service.LikeService;
 import com.digging.gingstagram.post.domain.Post;
 import com.digging.gingstagram.post.dto.CardView;
 import com.digging.gingstagram.post.repository.PostRepository;
@@ -27,10 +28,13 @@ public class PostService {
 	
 	private CommentService commentService;
 	
-	public PostService(PostRepository postRepository, UserService userService, CommentService commentService) {
+	private LikeService likeService;
+	
+	public PostService(PostRepository postRepository, UserService userService, CommentService commentService, LikeService likeService) {
 		this.postRepository = postRepository;
 		this.userService = userService;
 		this.commentService = commentService;
+		this.likeService = likeService;
 	}
 	
 	public boolean addPost(int userId, String contents, MultipartFile imageFile) {
@@ -56,7 +60,7 @@ public class PostService {
 		
 	}
 	
-	public List<CardView> getPostList() {
+	public List<CardView> getPostList(int userId) {
 		List<Post> postList = postRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 		
 		List<CardView> cardList = new ArrayList<>();
@@ -64,7 +68,6 @@ public class PostService {
 		for(Post post:postList) {
 			User user = userService.getUserById(post.getUserId());
 			List<Comment> commentList = commentService.getCommentListByPostId(post.getId());
-			List<String> commentLoginIdList = commentService.getCommentLoginIdList(commentList);
 			
 			CardView cardView = CardView.builder()
 			.postId(post.getId())
@@ -73,7 +76,9 @@ public class PostService {
 			.userId(post.getUserId())
 			.loginId(user.getLoginId())
 			.commentList(commentList)
-			.commentLoginIdList(commentLoginIdList)
+			.commentCount(commentList.size())
+			.isLike(likeService.isLike(post.getId(), userId))
+			.likeCount(likeService.likeCount(post.getId()))
 			.build();
 			
 			cardList.add(cardView);

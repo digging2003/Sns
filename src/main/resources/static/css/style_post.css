@@ -65,7 +65,6 @@ footer {
   font-size: 12px;
   color: #888;
   text-align: center;
-  position: fixed; /* 페이지 맨 밑에 고정되도록 수정 */
   bottom: 0;
   width: 100%;
   background-color: white; /* 흰색 배경 */

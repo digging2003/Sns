@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.digging.gingstagram.comment.domain.Comment;
 import com.digging.gingstagram.comment.repository.CommentRepository;
+import com.digging.gingstagram.like.domain.Like;
 import com.digging.gingstagram.user.domain.User;
 import com.digging.gingstagram.user.service.UserService;
 
@@ -50,17 +51,5 @@ public class CommentService {
 		return commentRepository.findByPostId(postId);
 	}
 	
-	// commentlist 로 loginId 조회 리스트
-	
-	public List<String> getCommentLoginIdList(List<Comment> commentList) {
-		List<String> commentLoginIdList = new ArrayList<>();
-		
-		for(Comment comment:commentList) {
-			int userId = comment.getUserId();
-			commentLoginIdList.add(userService.getUserById(userId).getLoginId());
-		}
-		
-		return commentLoginIdList;
-	}
 
 }

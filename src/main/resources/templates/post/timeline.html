@@ -13,17 +13,19 @@
 		    </div>
 		    <div class="post-actions d-flex justify-content-between mt-3">
 		        <div>
-		            <img value="unlike" src="/static/images/Heart.png" alt="Like" class="like icon" th:data-post-id="${card.postId}">
+		            <img th:if="${card.isLike}" src="/static/images/Heart filled.png" alt="Like" class="like icon" th:data-post-id="${card.postId}">
+		            <img th:unless="${card.isLike}" src="/static/images/Heart.png" alt="Like" class="like icon" th:data-post-id="${card.postId}">
+		            
 		            <img id="comment" src="/static/images/Message circle.png" alt="Comment" class="icon">
 		            <img src="/static/images/Send.png" alt="Share" class="icon">
 		        </div>
 		    </div>
 		    <div class="post-content mt-2">
-		      <div><strong>좋아요 123개</strong></div>
+		      <div><strong>좋아요 <span th:text="${card.likeCount}">123</span>개</strong></div>
 		      <div class="mt-2"><strong th:text="${card.loginId}">유저아이디</strong> <span th:text="${card.contents}">게시글내용~~~.</span></div>
-		      <div class="text-muted mt-2">댓글 <span>10</span>개 모두 보기</div>
+		      <div class="text-muted mt-2">댓글 <span th:text="${card.commentCount}">10</span>개 모두 보기</div>
 		      <div th:each="comment:${card.commentList}">
-		      	<div class="mt-2"><strong th:text="${${comment.getUserId}.loginId}">댓글단사람아이디</strong> <span th:text="${comment.contents}">댓글댛ㅅㄷ눋ㄴㄱ</span></div>
+		      	<div class="mt-2"><strong th:text="${comment.userId}">댓글단사람아이디</strong> <span th:text="${comment.contents}">댓글댛ㅅㄷ눋ㄴㄱ</span></div>
 		      </div>
 		      
 		        
@@ -69,17 +71,8 @@
         	  
         	  
         	// 좋아요 기능
-            $(".like").val("unlike");
             
             $(".like").on("click", function() {
-
-                if($(this).val() == "unlike") {
-                  $(this).attr("src", "/static/images/Heart filled.png");
-                  $(this).val("like")
-                } else {
-                  $(this).attr("src", "/static/images/Heart.png");
-                  $(this).val("unlike")
-                }
                 
                 let postId = $(this).data("post-id");
                 
@@ -98,6 +91,8 @@
 						alert("좋아요 에러!");
 					}
 				});
+				
+
 
               });
             
