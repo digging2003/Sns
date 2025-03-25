@@ -14,6 +14,7 @@ import lombok.Getter;
 @Getter
 public class CardView {
 
+	// 피드 정보
 	private int postId;
 	
 	private String contents;
@@ -22,5 +23,7 @@ public class CardView {
 	private int userId;
 	private String loginId;
 	
+	// 댓글 정보
 	private List<Comment> commentList;
+	private List<String> commentLoginIdList;
 }

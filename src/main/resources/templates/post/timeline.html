@@ -23,7 +23,7 @@
 		      <div class="mt-2"><strong th:text="${card.loginId}">유저아이디</strong> <span th:text="${card.contents}">게시글내용~~~.</span></div>
 		      <div class="text-muted mt-2">댓글 <span>10</span>개 모두 보기</div>
 		      <div th:each="comment:${card.commentList}">
-		      	<div class="mt-2"><strong th:text="${comment.userId}">댓글단사람아이디</strong> <span th:text="${comment.contents}">댓글댛ㅅㄷ눋ㄴㄱ</span></div>
+		      	<div class="mt-2"><strong th:text="${${comment.getUserId}.loginId}">댓글단사람아이디</strong> <span th:text="${comment.contents}">댓글댛ㅅㄷ눋ㄴㄱ</span></div>
 		      </div>
 		      
 		        

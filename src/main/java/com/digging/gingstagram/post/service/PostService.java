@@ -64,6 +64,7 @@ public class PostService {
 		for(Post post:postList) {
 			User user = userService.getUserById(post.getUserId());
 			List<Comment> commentList = commentService.getCommentListByPostId(post.getId());
+			List<String> commentLoginIdList = commentService.getCommentLoginIdList(commentList);
 			
 			CardView cardView = CardView.builder()
 			.postId(post.getId())
@@ -72,6 +73,7 @@ public class PostService {
 			.userId(post.getUserId())
 			.loginId(user.getLoginId())
 			.commentList(commentList)
+			.commentLoginIdList(commentLoginIdList)
 			.build();
 			
 			cardList.add(cardView);
