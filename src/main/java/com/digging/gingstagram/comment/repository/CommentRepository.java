@@ -9,4 +9,6 @@ import com.digging.gingstagram.comment.domain.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
 	public List<Comment> findByPostId(int postId);
+	
+	public List<Comment> findByUserId(int userId);
 }

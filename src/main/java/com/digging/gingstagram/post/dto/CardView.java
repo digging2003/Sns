@@ -2,7 +2,7 @@ package com.digging.gingstagram.post.dto;
 
 import java.util.List;
 
-import com.digging.gingstagram.comment.domain.Comment;
+import com.digging.gingstagram.comment.dto.CommentView;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class CardView {
 	private String loginId;
 	
 	// 댓글 정보
-	private List<Comment> commentList;
+	private List<CommentView> commentList;
 	private int commentCount;
 	
 	// 좋아요 정보

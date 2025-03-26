@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.digging.gingstagram.comment.domain.Comment;
 import com.digging.gingstagram.post.dto.CardView;
 import com.digging.gingstagram.post.service.PostService;
 
@@ -29,15 +28,12 @@ public class PostController {
 			, Model model) {
 		
 		int userId = (Integer) session.getAttribute("userId");
+		
 		List<CardView> cardList = postService.getPostList(userId);
+		
 		
 		model.addAttribute("cardList", cardList);
 		
-		for(CardView card:cardList) {
-			for(Comment comment:card.getCommentList()) {
-				int commentUserId = comment.getUserId();
-			}
-		}
 		
 		return "post/timeline";
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.digging.gingstagram.comment.domain.Comment;
+import com.digging.gingstagram.comment.dto.CommentView;
 import com.digging.gingstagram.comment.service.CommentService;
 import com.digging.gingstagram.common.FileManager;
 import com.digging.gingstagram.like.service.LikeService;
@@ -18,24 +19,17 @@ import com.digging.gingstagram.user.domain.User;
 import com.digging.gingstagram.user.service.UserService;
 
 import jakarta.persistence.PersistenceException;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor // final이 부여된 멤버변수만
 @Service
 public class PostService {
 
 	private final PostRepository postRepository;
+	private final UserService userService;
+	private final CommentService commentService;
+	private final LikeService likeService;
 	
-	private UserService userService;
-	
-	private CommentService commentService;
-	
-	private LikeService likeService;
-	
-	public PostService(PostRepository postRepository, UserService userService, CommentService commentService, LikeService likeService) {
-		this.postRepository = postRepository;
-		this.userService = userService;
-		this.commentService = commentService;
-		this.likeService = likeService;
-	}
 	
 	public boolean addPost(int userId, String contents, MultipartFile imageFile) {
 		
@@ -66,8 +60,10 @@ public class PostService {
 		List<CardView> cardList = new ArrayList<>();
 		
 		for(Post post:postList) {
+			
 			User user = userService.getUserById(post.getUserId());
-			List<Comment> commentList = commentService.getCommentListByPostId(post.getId());
+			
+			List<CommentView> commentList = commentService.getCommentView(post.getId());
 			
 			CardView cardView = CardView.builder()
 			.postId(post.getId())
@@ -86,6 +82,18 @@ public class PostService {
 		
 		return cardList;
 		
+	}
+	
+	public List<String> getCommentLoginIdList(List<Comment> commentList) {
+		List<String> commentLoginIdList = new ArrayList<>();
+		
+		for(Comment comment:commentList) {
+			int commentUserId = comment.getUserId();
+			
+			commentLoginIdList.add(userService.getUserById(commentUserId).getLoginId());
+		}
+		
+		return commentLoginIdList;
 	}
 	
 	
